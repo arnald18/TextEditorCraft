@@ -1,14 +1,14 @@
 import { openDB } from "idb";
 
 const initdb = async () =>
-  openDB("jate", 1, {
+  openDB("typeflow", 1, {
     upgrade(db) {
-      if (db.objectStoreNames.contains("jate")) {
-        console.log("jate database already exists");
+      if (db.objectStoreNames.contains("typeflow")) {
+        console.log("typeflow database already exists");
         return;
       }
-      db.createObjectStore("jate", { keyPath: "id", autoIncrement: true });
-      console.log("jate database created");
+      db.createObjectStore("typeflow", { keyPath: "id", autoIncrement: true });
+      console.log("typeflow database created");
     },
   });
 
@@ -24,8 +24,17 @@ export const putDb = async (content) => {
 
   console.log("Successfully added content to the database\n", result);
 };
+// method that gets all the content from the database
+export const getDb = async () => {
+  const textDb = await openDB("typeflow", 1);
+  const tx = textDb.transaction("typeflow", "readonly");
+  const store = tx.createObjectStore("text");
 
-// TODO: Add logic for a method that gets all the content from the database
-export const getDb = async () => console.error("getDb not implemented");
+  const request = store.getAll();
+
+  const result = await request;
+  console.log("result.value", result);
+  return result;
+};
 
 initdb();
